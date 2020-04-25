@@ -15,8 +15,12 @@ FIND_LIBRARY(LZO2_LIBRARY NAMES lzo2 liblzo2)
 
 # DXT
 FIND_PATH(SQUISH_INCLUDE_DIR squish.h)
-FIND_LIBRARY(SQUISH_LIBRARY NAMES libsquish.a)
-
+# Static on Windows
+if(WIN32)
+    FIND_LIBRARY(SQUISH_LIBRARY NAMES libsquish.a)
+else()
+    FIND_LIBRARY(SQUISH_LIBRARY NAMES libsquish.so)
+endif()
 # OpenMP
 find_package(OpenMP REQUIRED)
 
@@ -39,8 +43,11 @@ add_executable (paa-gimp-plugin "paa-gimp-plugin.cpp" "paa-gimp-plugin.h")
 if (CMAKE_COMPILER_IS_GNUCC)
     target_compile_options(paa-gimp-plugin PUBLIC "-Wno-deprecated-declarations")
     target_compile_options(paa-gimp-plugin PUBLIC "-Wno-write-strings")
-    target_link_libraries(paa-gimp-plugin PUBLIC "-Wl,-subsystem,windows")
     target_link_libraries(paa-gimp-plugin PUBLIC OpenMP::OpenMP_CXX)
+
+    if(WIN32)
+        target_link_libraries(paa-gimp-plugin PUBLIC "-Wl,-subsystem,windows")
+    endif()
 endif()
 
 target_link_directories(paa-gimp-plugin PUBLIC ${GIMP_DEPS_STATIC_LIBRARY_DIRS})
