@@ -22,7 +22,10 @@ find_package(OpenMP REQUIRED)
 
 # GIMP
 find_package(PkgConfig REQUIRED)
-pkg_check_modules(GIMP_DEPS REQUIRED IMPORTED_TARGET gimp-2.0 gimpui-2.0 glib-2.0 gtk+-2.0 gio-windows-2.0)
+pkg_check_modules(GIMP_DEPS REQUIRED IMPORTED_TARGET gimp-2.0 gimpui-2.0 glib-2.0 gtk+-2.0)
+if(WIN32)
+    pkg_check_modules(GIMP_DEPS_WIN gio-windows-2.0)
+endif()
 
 # Includes
 include_directories(${GRAD_AFF_INCLUDE_DIR})
@@ -42,6 +45,12 @@ endif()
 
 target_link_directories(paa-gimp-plugin PUBLIC ${GIMP_DEPS_STATIC_LIBRARY_DIRS})
 target_link_libraries(paa-gimp-plugin PUBLIC ${GIMP_DEPS_STATIC_LIBRARIES})
+
+if(WIN32)
+    target_link_directories(paa-gimp-plugin PUBLIC ${GIMP_DEPS_WIN_STATIC_LIBRARY_DIRS})
+    target_link_libraries(paa-gimp-plugin PUBLIC ${GIMP_DEPS_WIN_STATIC_LIBRARIES})
+endif()
+
 target_link_libraries(paa-gimp-plugin PUBLIC ${GRAD_AFF_LIB_DIR})
 
 target_link_libraries(paa-gimp-plugin PUBLIC ${LZO2_LIBRARY})
