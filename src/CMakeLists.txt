@@ -62,3 +62,8 @@ target_link_libraries(paa-gimp-plugin PUBLIC ${GRAD_AFF_LIB_DIR})
 
 target_link_libraries(paa-gimp-plugin PUBLIC ${LZO2_LIBRARY})
 target_link_libraries(paa-gimp-plugin PUBLIC ${SQUISH_LIBRARY})
+
+if(WIN32 AND (NOT "$ENV{appdata}" STREQUAL ""))
+    file(TO_CMAKE_PATH "$ENV{appdata}/GIMP/2.10/plug-ins/paa-gimp-plugin.exe" GIMP_PLUGIN_DIR)
+    add_custom_command(TARGET paa-gimp-plugin POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:paa-gimp-plugin> ${GIMP_PLUGIN_DIR})
+endif()

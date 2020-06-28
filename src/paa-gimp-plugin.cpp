@@ -70,6 +70,9 @@ static void run(const gchar* name, gint nParams, const GimpParam* param, gint* n
     gimp_ui_init(PLUGIN_NAME, true);
     GimpRunMode runMode = (GimpRunMode)param[0].data.d_int32;
 
+    // force dialog box
+    gimp_message_set_handler(GimpMessageHandlerType::GIMP_MESSAGE_BOX);
+
     if(strcmp (name, LOAD_PROC) == 0) {
         if(nParams != 3)
             status = GIMP_PDB_CALLING_ERROR;
@@ -130,11 +133,11 @@ static void run(const gchar* name, gint nParams, const GimpParam* param, gint* n
 
 gint32 loadPaa(const gchar* filename, int interactive) {
 
-    auto paa = grad_aff::Paa(filename);
+    auto paa = grad_aff::Paa();
     try {
-        paa.readPaa();
+        paa.readPaa(filename);
     } catch(std::runtime_error& ex) {
-        gimp_message(ex.what());
+        gimp_message((std::string("Exception during Paa Import: \n") + ex.what()).c_str());
         return LOAD_PAA_ERROR;
     }
 
@@ -197,12 +200,7 @@ gboolean savePaa (const gchar *filename, gint32 imageId, gint32 drawableId, GErr
     int channelNumber = gimp_drawable_bpp(drawableId);
 
 	if (!isPowerOfTwo(width) || !isPowerOfTwo(height)) {
-		gimp_message("Dimensions have to be a power of two (2^n)");
-		return false;
-	}
-
-	if (width != height && width / 2 != height && width != height / 2) {
-		gimp_message("Aspect ratio has to be 1:1, 1:2 or 2:1");
+		gimp_message("Error during Paa Export: \n Dimensions have to be a power of two (2^n)");
 		return false;
 	}
 
