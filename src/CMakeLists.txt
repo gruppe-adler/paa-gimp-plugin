@@ -15,12 +15,8 @@ FIND_LIBRARY(LZO2_LIBRARY NAMES lzo2 liblzo2)
 
 # DXT
 FIND_PATH(SQUISH_INCLUDE_DIR squish.h)
-# Static on Windows
-if(WIN32)
-    FIND_LIBRARY(SQUISH_LIBRARY NAMES libsquish.a)
-else()
-    FIND_LIBRARY(SQUISH_LIBRARY NAMES libsquish.so)
-endif()
+FIND_LIBRARY(SQUISH_LIBRARY NAMES libsquish.a)
+
 # OpenMP
 find_package(OpenMP REQUIRED)
 
