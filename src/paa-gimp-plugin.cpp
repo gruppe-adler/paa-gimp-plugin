@@ -239,7 +239,7 @@ gboolean savePaa (const gchar *filename, gint32 imageId, gint32 drawableId, GErr
         paa.calculateMipmapsAndTaggs();
         paa.writePaa(filename);
     } catch(std::runtime_error& ex) {
-        gimp_message(ex.what());
+        gimp_message((std::string("Exception during Paa Export: \n") + ex.what()).c_str());
         return false;
     }
     return true;
