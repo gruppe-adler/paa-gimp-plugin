@@ -120,7 +120,10 @@ static void run(const gchar* name, gint nParams, const GimpParam* param, gint* n
 
         if(status == GIMP_PDB_SUCCESS) {
             GError* error = NULL;
-            savePaa(param[3].data.d_string, imageId, drawableId, &error);
+            auto result = savePaa(param[3].data.d_string, imageId, drawableId, &error);
+            if(!result) {
+                status = GIMP_PDB_CALLING_ERROR;
+            }
         }
     } else {
         status = GIMP_PDB_CALLING_ERROR;
@@ -200,7 +203,7 @@ gboolean savePaa (const gchar *filename, gint32 imageId, gint32 drawableId, GErr
     int channelNumber = gimp_drawable_bpp(drawableId);
 
 	if (!isPowerOfTwo(width) || !isPowerOfTwo(height)) {
-		gimp_message("Error during Paa Export: \n Dimensions have to be a power of two (2^n)");
+		gimp_message("Error during Paa Export:\nDimensions have to be a power of two (2^n)");
 		return false;
 	}
 
