@@ -10,8 +10,7 @@ FIND_PATH(GRAD_AFF_INCLUDE_DIR grad_aff/grad_aff.h HINTS ${GRAD_AFF_PATH} PATH_S
 FIND_LIBRARY(GRAD_AFF_LIB_DIR NAMES grad_aff HINTS ${GRAD_AFF_PATH} PATH_SUFFIXES lib)
 
 # LZO
-FIND_PATH(LZO2_INCLUDE_DIR lzo/lzoconf.h)
-FIND_LIBRARY(LZO2_LIBRARY NAMES lzo2 liblzo2)
+find_package(lzokay REQUIRED)
 
 # DXT
 FIND_PATH(SQUISH_INCLUDE_DIR squish.h)
@@ -56,7 +55,7 @@ endif()
 
 target_link_libraries(paa-gimp-plugin PUBLIC ${GRAD_AFF_LIB_DIR})
 
-target_link_libraries(paa-gimp-plugin PUBLIC ${LZO2_LIBRARY})
+target_link_libraries(paa-gimp-plugin PUBLIC lzokay::lzokay)
 target_link_libraries(paa-gimp-plugin PUBLIC ${SQUISH_LIBRARY})
 
 if(WIN32 AND (NOT "$ENV{appdata}" STREQUAL ""))
